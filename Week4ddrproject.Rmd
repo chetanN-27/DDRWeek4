@@ -1,0 +1,68 @@
+---
+title: "week4"
+author: "Chetan Narkhede"
+date: "05/11/2020"
+output:
+  ioslides_presentation: default
+  slidy_presentation: default
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+## mtcars dataset
+
+
+There is a set of variables related to MPG {outcome}.
+
+Here the diff. of the MPG b/w auto & manual transmission is focused, 
+the `mtcars` dataset in car package is taken as the data source, 
+and techniques about regression models is used to solve the following two questions:
+
+* “Is an auto or manual transmission better for MPG?”
+*  “Quantifyingg how diifferent iis thee MilesPerGallon b/w auto & manual transmissions?”
+
+
+
+## mtcars dataset - Format
+
+**A data frame with 32 observations on 11 variables.**
+
+> The data was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973–74 models).
+
+```{r cache=TRUE}
+library(datasets)
+mpgData <- with(mtcars, data.frame(mpg, am))
+mpgData$am <- factor(mpgData$am, labels = c("Auto", "Man"))
+#summary(mpgData)
+```
+## Motor Trend Car Road Tests
+
+
+```{r cache=TRUE}
+summary(mpgData[mpgData$am == "Auto",])
+summary(mpgData[mpgData$am == "Man",])
+```
+
+
+
+```{r cache=TRUE}
+fit <- lm(mpg ~ as.integer(am), data=mpgData)
+summary(fit)
+```
+## Analysis - main code
+
+Therefore, manual trans. is more efficient than auto for Miles_Per_Gallon, which increased by `r coef(fit)[2]`.
+
+```{r cache=TRUE}
+par(mfrow=c(1,2))
+with(mpgData,{
+     boxplot(mpg ~ am, 
+             ylab = "miles per gallon (MPG)")
+     plot(mpg ~ as.integer(am),
+             xlab = "Auto (1) or Man(2)",
+             ylab = "miles per gallon (MPG)")
+     abline(fit, col=2)
+     })
+```
+
+
